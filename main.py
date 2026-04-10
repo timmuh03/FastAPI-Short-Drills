@@ -1,8 +1,11 @@
 from fastapi import FastAPI
-from db import check_db_connection
+from db import check_db_connection, engine
 from routers import router as notes_router
+from models import Base
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def read_root():
