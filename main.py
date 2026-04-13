@@ -13,6 +13,21 @@ Base.metadata.create_all(bind=engine)
 def read_root():
   return FileResponse("index.html")
   # return RedirectResponse(url="/docs")
+@app.get("/app.js", include_in_schema=False)
+def serve_js():
+  return FileResponse(
+    "app.js", 
+    media_type="application/javascript"
+  )
+@app.get(
+  "/styles.css",
+  include_in_schema=False
+)
+def serve_css():
+  return FileResponse(
+    "styles.css",
+    media_type="text/css"
+  )
 
 @app.get("/health")
 def health_check():
