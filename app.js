@@ -6,14 +6,54 @@ function createConceptElement(concept) {
   const li = document.createElement("li");
   li.className = "concept-shell";
 
+  const termShell = 
+    document.createElement("div");
+  termShell.className = "term-shell"
+
+  const termBtn =
+    document.createElement("button");
+  termBtn.className = "term-btn";
+  termBtn.textContent = ">";
+
+  const details = 
+    document.createElement("div");
+  details.className = "details";
+  details.textContent = concept.description;
+  details.textContent += "\n\n" + 
+    concept.example;
+  details.style.display = "none"
+  
+  termBtn.addEventListener(
+    "click", () => {termBtnHandler(
+      termBtn, details)
+    }
+  );
+
   const term = 
     document.createElement("div");
   term.className = "term";
   term.textContent = concept.term;
 
-  li.appendChild(term);
+  termShell.appendChild(termBtn)
+  termShell.appendChild(term);
+
+  li.appendChild(termShell);
+  li.appendChild(details);
 
   return li;
+}
+
+function termBtnHandler(termBtn, details) {
+  const isHidden = 
+    details.style.display === "none"
+  if (isHidden) {
+    details.style.display = "block";
+    termBtn.textContent = "v";
+  } else {
+    details.style.display = "none";
+    termBtn.textContent = ">";
+  }
+  
 }
 
 async function fetchConcepts() {
@@ -26,30 +66,5 @@ async function fetchConcepts() {
     list.appendChild(li);
   }
 }
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const term = input.value.trim();
-
-  if (!term) {
-    return;
-  }
-
-  const response = await fetch("/concepts", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ term }),
-  });
-
-  if (!response.ok) {
-    alert("Failed to add concept");
-    return;
-  }
-
-  input.value = "";
-  await fetchConcepts();
-});
 
 fetchConcepts();

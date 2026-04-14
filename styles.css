@@ -44,9 +44,24 @@ ul {
 li:not(:last-child) {
    border-bottom: 1px solid #ccc;
 }
+.term-shell {
+   display: flex;
+}
 .term {
+   display: inline-block;
    padding: 15px;
    overflow-wrap: break-word;
+}
+.term-btn {
+   display: inline-block;
+   max-width: 60px;
+   background-color: #fff;
+}
+.details {
+   display: none;
+   padding: 15px;
+   white-space: pre-wrap;
+   border-top: 1px solid #ccc
 }
 @media (min-width: 768px) {
    body {
