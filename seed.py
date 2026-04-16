@@ -68,17 +68,21 @@ seed_data = [
 def seed_concepts():
     db = SessionLocal()
     try:
-        for item in seed_data:
-            existing = db.query(Concept).filter_by(term=item["term"]).first()
-            if existing:
-                continue
+      for item in seed_data:
+        existing = (
+          db.query(Concept).filter_by(
+            term=item["term"]
+          ).first()
+        )
+        if existing:
+          continue
 
-            concept= Concept(
-                term=item["term"],
-                description=item["description"],
-                example=item["example"],
-            )
-            db.add(concept)
+        concept= Concept(
+          term=item["term"],
+          description=item["description"],
+          example=item["example"],
+        )
+        db.add(concept)
 
         db.commit()
         print("Seeding complete.")

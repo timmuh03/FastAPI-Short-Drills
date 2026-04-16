@@ -15,12 +15,8 @@ body {
 h1 {
    margin-top: 0;
    font-size: 2rem;
-}
-form {
-   display: flex;
-   flex-direction: column;
-   gap: 12px;
-   margin-bottom: 20px;
+   transform: translateY(15px);
+   margin-bottom: 35px;
 }
 input, button {
    width: 100%;
@@ -32,6 +28,7 @@ input, button {
 button {
    border: none;
    cursor: pointer;
+   background-color: #0000;
 }
 ul {
    list-style: none;
@@ -44,6 +41,10 @@ ul {
 li:not(:last-child) {
    border-bottom: 1px solid #ccc;
 }
+.header-controls {
+   display: flex;
+   flex-direction: row;
+}
 .term-shell {
    display: flex;
 }
@@ -55,13 +56,72 @@ li:not(:last-child) {
 .term-btn {
    display: inline-block;
    max-width: 60px;
-   background-color: #fff;
 }
 .details {
    display: none;
    padding: 15px;
    white-space: pre-wrap;
-   border-top: 1px solid #ccc
+   border-top: 1px solid #ccc;
+}
+.open-btn {
+   border: 1px solid #ccc;
+   border-radius: 10px 10px 0 0;
+   border-bottom: none;
+   z-index: 11;
+}
+.details.open-details {
+   display: block;
+}
+#sort-ctl-shell,
+#search-ctl-shell,
+#filter-ctl-shell {
+   position: relative;
+   display: flex;
+   z-index: 1;
+}
+#sort-btn,
+#search-btn,
+#filter-btn {
+   position: relative;
+   background-color: #f5f5f5;
+   padding-top: 0;
+   padding-bottom: 5px;
+   padding-left: 20px;
+   padding-right: 20px
+}
+#sort-btn {
+   font-size: 1.5rem;
+}
+#search-btn {
+   font-size: 2.5rem;
+}
+#filter-btn {
+   font-size: 2rem;
+}
+#header {
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+}
+#sort-select,
+#search-input,
+#filter-select {
+   display: none;
+   position: absolute;
+   top: 100%;
+   right: 0;
+   width: 100px;
+   background-color: #f5f5f5;
+   border-radius: 10px 0px 10px 10px;
+   border: 1px solid #ccc;
+   transform: translateY(-1px);
+   z-index: 1;
+}
+#sort-select.open-panel,
+#search-input.open-panel,
+#filter-select.open-panel {
+   display: block;
+   z-index: 10;
 }
 @media (min-width: 768px) {
    body {

@@ -1,4 +1,4 @@
-<!Doctype html>
+<!DOCTYPE html>
 <html lang="en">
    <head>
       <meta charset="UTF-8">
@@ -12,9 +12,41 @@
 
    </head>
    <body>
-      <div class="app">
+     <div class="app">
+       <div id="header" class="header">
          <h1>Concepts</h1>
-
+         <div class="header-controls">
+           <div id="sort-ctl-shell">
+             <button id="sort-btn">⇅
+             </button>
+             <div id="sort-select">
+               <button value="term-az">
+                  Term A-Z
+               </button>
+               <button value="term-za">
+                  Term Z-A
+               </button>
+             </div>
+           </div>
+           <div id="search-ctl-shell">
+             <button id="search-btn">⌕
+             </button>
+             <input id="search-input"
+               type="text"
+               placeholder="Search">
+           </div>
+           <div id="filter-ctl-shell">
+             <button id="filter-btn">☰
+             </button>
+             <div id="filter-select">
+               <button value="all">
+                  All
+               </button>
+             </div>
+           </div>
+         </div> 
+       </div>
+         
          <ul id="concepts-list">
          </ul>
         
