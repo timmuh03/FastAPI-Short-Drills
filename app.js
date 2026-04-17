@@ -3,6 +3,11 @@ const sortBtn =
 const sortSelect = 
   document.getElementById("sort-select");
 
+const sortTermAz = document.getElementById(
+  "sort-term-az");
+const sortTermZa = document.getElementById(
+  "sort-term-za");
+
 const searchBtn = 
   document.getElementById("search-btn");
 const searchInput = 
@@ -25,6 +30,14 @@ const searchCtlShell =
 const filterCtlShell = 
   document.getElementById(
     "filter-ctl-shell");
+
+const appState = {
+  allConcepts: [],
+  visibleConcepts: [],
+  currentSort: "term-az",
+  currentFilter: "all",
+  currentSearch: "",
+};
 
 function createConceptElement(concept) {
   const li = document.createElement("li");
@@ -52,9 +65,13 @@ function createConceptElement(concept) {
   });
 
   const term = 
-    document.createElement("div");
+    document.createElement("button");
   term.className = "term";
   term.textContent = concept.term;
+
+  term.addEventListener("click", () => {
+    termBtnHandler(termBtn, details);
+  });
 
   termShell.appendChild(termBtn);
   termShell.appendChild(term);
@@ -79,6 +96,7 @@ function termBtnHandler(termBtn, details) {
     termBtn.textContent = ">";
   }
 }
+
 function hideAllControls() {
   sortSelect.classList.remove(
     "open-panel");
@@ -103,7 +121,8 @@ function toggleControl(btn, panel) {
     panel.classList.add("open-panel");
   }
 }
-function setControls() {
+
+function setListeners() {
   sortBtn.addEventListener("click", () => {
     toggleControl(
       sortBtn, sortSelect);
@@ -120,36 +139,93 @@ function setControls() {
     toggleControl(
       filterBtn, filterSelect);
   });
+
+  sortTermAz.addEventListener(
+    "click", () => {
+      sortTermAz.textContent = "✓ Term A-Z"
+      sortTermZa.textContent = "Term Z-A"
+      appState.currentSort = "term-az"
+      console.log("Sorted A-Z");
+
+      sortConceptsAz(
+        appState.visibleConcepts);
+  });
+  sortTermZa.addEventListener(
+    "click", () => {
+      sortTermAz.textContent = "Term A-Z"
+      sortTermZa.textContent = "✓ Term Z-A"
+      appState.currentSort = "term-za"
+      console.log("Sorted Z-A");
+
+      sortConceptsZa(
+        appState.visibleConcepts);
+  });
+
+  document.addEventListener(
+    "click", (event) => {
+    const clickedInsideSort = 
+      sortCtlShell.contains(event.target);
+    const clickedInsideSearch = 
+      searchCtlShell.contains(
+        event.target);
+    const clickedInsideFilter = 
+      filterCtlShell.contains(
+        event.target);
+
+    if (!clickedInsideSort && 
+        !clickedInsideSearch && 
+        !clickedInsideFilter) {
+      hideAllControls();
+    }
+  });
 }
-
-async function fetchConcepts() {
-  const response = 
-    await fetch("/concepts");
-  const concepts = await response.json();
+function renderConcepts(concepts) {
   list.innerHTML = "";
-
   for (const concept of concepts) {
     const li = 
       createConceptElement(concept);
     list.appendChild(li);
   }
 }
+async function init() {
+  setListeners();
+  appState.allConcepts = 
+    await fetchConcepts();
+  appState.visibleConcepts = 
+    [...appState.allConcepts];
+  renderConcepts(appState.visibleConcepts);
+}
+async function fetchConcepts() {
+  const response = 
+    await fetch("/concepts");
 
-document.addEventListener(
-  "click", (event) => {
-  const clickedInsideSort = 
-    sortCtlShell.contains(event.target);
-  const clickedInsideSearch = 
-    searchCtlShell.contains(event.target);
-  const clickedInsideFilter = 
-    filterCtlShell.contains(event.target);
-
-  if (!clickedInsideSort && 
-      !clickedInsideSearch && 
-      !clickedInsideFilter) {
-    hideAllControls();
+  if (!response.ok) {
+    alert("Failed to fetch concepts")
+    return [];
   }
-});
+  
+  const concepts = await response.json();
+  return concepts;
+}
+function sortConceptsAz(concepts) {
+  appState.visibleConcepts = 
+    concepts.toSorted((a, b) => 
+      a.term.localeCompare(b.term));
+    
+  renderConcepts(
+    appState.visibleConcepts
+  );
+}
+function sortConceptsZa(concepts) {
+  appState.visibleConcepts = 
+    concepts.toSorted((a, b) => 
+      b.term.localeCompare(a.term));
 
-setControls();
-fetchConcepts();
+  renderConcepts(
+    appState.visibleConcepts
+  );
+}
+
+
+init();
+
