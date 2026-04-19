@@ -51,11 +51,15 @@ def delete_concept(
   concept_id: int,
   db: Session = Depends(get_db)
 ):
-  concept = db.scalars(
+  concept = db.scalar(
     select(Concept).where(
-      Concept.id == concept_id)).first()
+      Concept.id == concept_id))
+  if not concept:
+    raise HTTPException(
+      status_code=404,
+      detail="Concept not found"
+    )
 
-  if concept:
-     db.delete(concept)
-     db.commit()
-     return concept
+  db.delete(concept)
+  db.commit()
+  return concept

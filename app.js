@@ -109,6 +109,7 @@ function hideAllControls() {
   searchBtn.classList.remove("open-btn");
   filterBtn.classList.remove("open-btn");
 }
+
 function toggleControl(btn, panel) {
   const isHidden = 
     !panel.classList.contains(
@@ -122,12 +123,65 @@ function toggleControl(btn, panel) {
   }
 }
 
+function getSortedConcepts(concepts) {
+  if (appState.currentSort ===
+      "term-az") {
+    return concepts.toSorted((a, b) =>
+      a.term.localeCompare(b.term)
+    );
+  } else if (appState.currentSort ===
+             "term-za") {
+    return concepts.toSorted((a, b) =>
+      b.term.localeCompare(a.term)
+    );
+  }
+  return concepts;
+}
+
+ function applyState() {
+   let concepts = 
+     [...appState.allConcepts];
+
+   concepts = concepts.filter((concept) =>
+       concept.term.toLowerCase().
+       includes(appState.currentSearch));
+
+   concepts = getSortedConcepts(concepts);
+
+   appState.visibleConcepts = concepts;
+   renderConcepts();
+ }
+
+function renderConcepts() {
+  list.innerHTML = "";
+  
+  for (const concept of appState.
+       visibleConcepts) {
+    const li = 
+      createConceptElement(concept);
+    list.appendChild(li);
+  }
+}
+
+async function fetchConcepts() {
+  const response = 
+    await fetch("/concepts");
+
+  if (!response.ok) {
+    alert("Failed to fetch concepts")
+    return [];
+  }
+  
+  const concepts = await response.json();
+  return concepts;
+}
+
 function setListeners() {
   sortBtn.addEventListener("click", () => {
     toggleControl(
       sortBtn, sortSelect);
   });
-      
+
   searchBtn.addEventListener(
     "click", () => {
     toggleControl(
@@ -142,90 +196,61 @@ function setListeners() {
 
   sortTermAz.addEventListener(
     "click", () => {
-      sortTermAz.textContent = "✓ Term A-Z"
-      sortTermZa.textContent = "Term Z-A"
-      appState.currentSort = "term-az"
-      console.log("Sorted A-Z");
+      sortTermAz.textContent = 
+        "✓ Term A-Z";
+      sortTermZa.textContent = "Term Z-A";
+      appState.currentSort = "term-az";
 
-      sortConceptsAz(
-        appState.visibleConcepts);
+      applyState();
   });
   sortTermZa.addEventListener(
     "click", () => {
-      sortTermAz.textContent = "Term A-Z"
-      sortTermZa.textContent = "✓ Term Z-A"
-      appState.currentSort = "term-za"
-      console.log("Sorted Z-A");
+      sortTermAz.textContent = "Term A-Z";
+      sortTermZa.textContent = 
+        "✓ Term Z-A";
+      appState.currentSort = "term-za";
 
-      sortConceptsZa(
-        appState.visibleConcepts);
+      applyState();
   });
 
+  searchInput.addEventListener(
+    "input", (event) => {
+      appState.currentSearch =
+        event.target.value.toLowerCase().
+          trim();
+      console.log("Searching for: " +
+        appState.currentSearch);
+
+      applyState();
+  });
+
+  //closes all panels when clicking outside
   document.addEventListener(
     "click", (event) => {
     const clickedInsideSort = 
       sortCtlShell.contains(event.target);
     const clickedInsideSearch = 
-      searchCtlShell.contains(
-        event.target);
+        searchCtlShell.contains(
+          event.target);
     const clickedInsideFilter = 
-      filterCtlShell.contains(
-        event.target);
+        filterCtlShell.contains(
+          event.target);
 
     if (!clickedInsideSort && 
-        !clickedInsideSearch && 
-        !clickedInsideFilter) {
-      hideAllControls();
+      !clickedInsideSearch && 
+      !clickedInsideFilter) {
+        hideAllControls();
     }
   });
 }
-function renderConcepts(concepts) {
-  list.innerHTML = "";
-  for (const concept of concepts) {
-    const li = 
-      createConceptElement(concept);
-    list.appendChild(li);
-  }
-}
+
 async function init() {
   setListeners();
   appState.allConcepts = 
     await fetchConcepts();
-  appState.visibleConcepts = 
-    [...appState.allConcepts];
-  renderConcepts(appState.visibleConcepts);
-}
-async function fetchConcepts() {
-  const response = 
-    await fetch("/concepts");
 
-  if (!response.ok) {
-    alert("Failed to fetch concepts")
-    return [];
-  }
-  
-  const concepts = await response.json();
-  return concepts;
+  applyState();
 }
-function sortConceptsAz(concepts) {
-  appState.visibleConcepts = 
-    concepts.toSorted((a, b) => 
-      a.term.localeCompare(b.term));
-    
-  renderConcepts(
-    appState.visibleConcepts
-  );
-}
-function sortConceptsZa(concepts) {
-  appState.visibleConcepts = 
-    concepts.toSorted((a, b) => 
-      b.term.localeCompare(a.term));
-
-  renderConcepts(
-    appState.visibleConcepts
-  );
-}
-
 
 init();
 

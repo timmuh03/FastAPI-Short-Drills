@@ -13,21 +13,25 @@
    </head>
    <body>
      <div class="app">
-       <div id="header" class="header">
+       <div class="header">
          <h1>Concepts</h1>
          <div class="header-controls">
            <div id="sort-ctl-shell">
-             <button id="sort-btn">⇅
+             <button id="sort-btn" 
+               type="button" aria-label=
+               "Open sort options">⇅
              </button>
              <div id="sort-select">
                <button id="sort-term-az"
                  class="sort-option"
+                 type="button"
                  data-term-sort=
                  "term-az">
                   Term A-Z
                </button>
                <button id="sort-term-za"
                  class="sort-option"
+                 type="button"
                  data-term-sort=
                  "term-za">
                   Term Z-A
@@ -35,17 +39,22 @@
              </div>
            </div>
            <div id="search-ctl-shell">
-             <button id="search-btn">⌕
+             <button id="search-btn" 
+               type="button" aria-label=
+               "Open search">⌕
              </button>
              <input id="search-input"
                type="text"
-               placeholder="Search">
+               placeholder="Search"
+               aria-label="search concepts">
            </div>
            <div id="filter-ctl-shell">
-             <button id="filter-btn">☰
+             <button id="filter-btn"
+               type="button" aria-label=
+               "Open filter options">☰
              </button>
              <div id="filter-select">
-               <button value="all">
+               <button data-filter="all">
                   All
                </button>
              </div>
