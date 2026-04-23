@@ -13,8 +13,10 @@ export function hideAllControls(refs) {
   );
 
   refs.sortBtn.classList.remove("open-btn");
-  refs.searchBtn.classList.remove("open-btn");
-  refs.filterBtn.classList.remove("open-btn");
+  refs.searchBtn.classList.remove(
+    "open-btn");
+  refs.filterBtn.classList.remove(
+    "open-btn");
 }
 
 export function toggleControl(

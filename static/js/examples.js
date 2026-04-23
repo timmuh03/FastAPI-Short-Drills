@@ -82,6 +82,17 @@ function createExampleItem(
   exampleTitle.textContent =
     example.title;
 
+  exampleTitle.addEventListener(
+    "click",
+    () => {
+      handleExampleClick(
+        exampleItem,
+        examplesList,
+        examplesBtn
+      );
+    }
+  )
+
   const examplePreview =
     document.createElement("pre");
   examplePreview.className =
@@ -90,10 +101,10 @@ function createExampleItem(
     example.template_text ||
     "No example available";
 
-  exampleTitle.addEventListener(
+  examplePreview.addEventListener(
     "click",
     () => {
-      selectExample(
+      handleExampleClick(
         exampleItem,
         examplesList,
         examplesBtn
@@ -108,6 +119,7 @@ function createExampleItem(
   return exampleItem;
 }
 
+// Select active example
 function selectExample(
   exampleItem,
   examplesList,
@@ -134,6 +146,7 @@ function selectExample(
   examplesBtn.textContent = "+";
 }
 
+// Toggle examples list
 function examplesBtnHandler(
   examplesBtn,
   examplesList
@@ -153,5 +166,29 @@ function examplesBtnHandler(
       "open-examples"
     );
     examplesBtn.textContent = "+";
+  }
+}
+
+function handleExampleClick(
+  exampleItem,
+  examplesList,
+  examplesBtn
+) {
+  const isHidden =
+    !examplesList.classList.contains(
+      "open-examples"
+    );
+
+  if (isHidden) {
+    examplesBtnHandler(
+      examplesBtn,
+      examplesList
+    );
+  } else {
+    selectExample(
+      exampleItem,
+      examplesList,
+      examplesBtn
+    );
   }
 }
